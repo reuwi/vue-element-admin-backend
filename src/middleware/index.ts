@@ -11,7 +11,7 @@ const codeMap = {
 const utilFn = {
   resuccess(data: any) {
     return {
-      code: 200,
+      code: 20000,
       success: true,
       message: codeMap['20000'],
       data: data || null
