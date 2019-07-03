@@ -62,6 +62,8 @@ createConnection({
     if (/^\/api/.test(ctx.path)) {
       return pathToRegexp([
         '/api/login',
+        '/api/routes',
+        '/api/routes/import'
       ]).test(ctx.path)
     }
     return true
