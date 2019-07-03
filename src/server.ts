@@ -11,6 +11,7 @@ import * as winston from 'winston'
 
 import * as path from 'path'
 import * as pathToRegexp from 'path-to-regexp'
+import { Middleware } from './middleware'
 import { config } from './config'
 import { logger } from './logging'
 import { router } from './router'
@@ -55,6 +56,7 @@ createConnection({
   // Enable bodyParser with default options
   app.use(koaBody({ multipart: true }))
 
+  app.use(Middleware.util)
   // JWT middleware -> below this line routes are only reached if JWT token is valid, secret as env variable
   app.use(jwt({ secret: config.jwtSecret }).unless((ctx: Koa.Context) => {
     if (/^\/api/.test(ctx.path)) {
