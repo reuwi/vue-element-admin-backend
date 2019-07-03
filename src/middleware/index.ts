@@ -12,15 +12,14 @@ const utilFn = {
   resuccess(data: any) {
     return {
       code: 20000,
-      success: true,
-      message: codeMap['20000'],
+      msg: codeMap['20000'],
       data: data || null
     }
   },
-  refail(message: string, code: number | null, data: number | null) {
+  refail(msg: string, code: number | null, data: number | null) {
     return {
       code: code || -1,
-      message: message || codeMap[code],
+      msg: msg || codeMap[code],
       data: data || null
     }
   }
