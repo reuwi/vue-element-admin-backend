@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToMany } from 'typeorm'
-import { RouteMeta } from './route-meta'
+import { Route } from './route'
 
 @Entity()
 export class Role {
@@ -21,6 +21,6 @@ export class Role {
   })
   public description: string
 
-  @ManyToMany(type => RouteMeta, routeMeta => routeMeta.roles)
-  public routeMeta: RouteMeta[]
+  @ManyToMany(type => Route, route => route.roles)
+  public route: Route[]
 }

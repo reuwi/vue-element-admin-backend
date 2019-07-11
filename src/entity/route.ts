@@ -1,15 +1,21 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn } from 'typeorm'
-import { RouteMeta } from './route-meta'
+import { Entity, Tree, TreeParent, TreeChildren, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable } from 'typeorm'
+import { Role } from './role'
 
 @Entity()
+@Tree('materialized-path')
 export class Route {
   @PrimaryGeneratedColumn()
   public id: number
 
-  @Column()
-  public parentId: number
+  @TreeParent()
+  public parent: Route
 
-  @Column()
+  @TreeChildren({ cascade: true })
+  public children: Route[]
+
+  @Column({
+    default: 0
+  })
   public order: number
 
   @Column({
@@ -18,11 +24,13 @@ export class Route {
   public path: string
 
   @Column({
+    unique: true,
     length: 80
   })
   public name: string
 
   @Column({
+    nullable: true,
     length: 80
   })
   public redirect: string
@@ -32,8 +40,29 @@ export class Route {
   })
   public component: string
 
-  @OneToOne(type => RouteMeta, routeMeta => routeMeta.route, {
-    cascade: true,
+  @Column({
+    nullable: true,
+    length: 80
   })
-  public meta: RouteMeta
+  public title: string
+
+  @Column({
+    nullable: true,
+    length: 80
+  })
+  public icon: string
+
+  @Column({
+    default: false
+  })
+  public noCache: boolean
+
+  @Column({
+    default: false
+  })
+  public affix: boolean
+
+  @ManyToMany(type => Role, role => role.route)
+  @JoinTable()
+  public roles: Role[]
 }

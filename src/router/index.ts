@@ -16,8 +16,8 @@ router.delete('/users/:id', controller.user.deleteUser)
 // Route Routes
 router.get('/routes', controller.route.getRoutes)
 router.post('/routes', controller.route.createRoute)
-router.delete('routes/:id', controller.route.deleteRoute)
-router.put('routes/:id', controller.route.updateRoute)
-router.post('routes/import', controller.route.importRoutes)
+router.delete('/routes/:id', controller.route.deleteRoute)
+router.put('/routes/:id', controller.route.updateRoute)
+router.post('/routes/import', controller.route.importRoutes)
 
 export { router }

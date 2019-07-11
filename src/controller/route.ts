@@ -1,18 +1,31 @@
 import { BaseContext } from 'koa'
 import { getManager, Repository, getConnection } from 'typeorm'
 import { Route } from '../entity/route'
-import { RouteMeta } from '../entity/route-meta'
+import { flat2tree } from '../utils'
 
 export default class RouteController {
   public static async getRoutes(ctx: BaseContext) {
     const routeRepository: Repository<Route> = getManager().getRepository(Route)
-    const routes: Route[] = await routeRepository.find()
+    const routes: Route[] = await routeRepository.find({ relations: ['parent'] })
+    const routeProps = ['id', 'parentId', 'name', 'component', 'redirect', 'path', 'hidden']
+    const mapedRoutes = routes.map(route => {
+      let obj = { parentId: route.parent && route.parent.id, meta: {}}
+      delete route.parent
+      for (let key in route) {
+        if (!routeProps.includes(key)) {
+          obj.meta = { [key]: route[key] }
+        } else {
+          obj[key] = route[key]
+        }
+      }
+      return obj
+    })
 
     ctx.status = 200
     ctx.body = {
       code: 20000,
       msg: 'success',
-      data: routes
+      data: flat2tree(mapedRoutes)
     }
   }
 
@@ -23,8 +36,7 @@ export default class RouteController {
       ctx.status = 200
       ctx.body = ctx.util.refail(null, 400001)
     }
-    const metaTobeCreated: RouteMeta = Object.assign(new RouteMeta(), meta)
-    const routeTobeCreated: Route = Object.assign(new Route(), routeData, { meta: metaTobeCreated })
+    const routeTobeCreated: Route = Object.assign(new Route(), routeData, ...routeData.meta)
     const route: Route = await routeRepository.save(routeTobeCreated)
     ctx.status = 200
     ctx.body = ctx.util.resuccess(route.id)
@@ -32,14 +44,12 @@ export default class RouteController {
 
   public static async updateRoute(ctx: BaseContext) {
     const routeRepository: Repository<Route> = getManager().getRepository(Route)
-    const routeMetaRepository: Repository<RouteMeta> = getManager().getRepository(RouteMeta)
     const { id }: { id: string } = ctx.params
     const { meta: metaData, ...routeData } = ctx.request.body
     if (!routeData || !metaData) {
       ctx.status = 200
       ctx.body = ctx.util.refail(null, 400001)
     }
-    const routeMetaTobeUpdated: RouteMeta = await routeMetaRepository.findOne({ route: routeData })
     const routeToBeUpdated: Route | null = await routeRepository.findOne({ id: Number(id) })
 
     if (!routeToBeUpdated) {
@@ -49,8 +59,7 @@ export default class RouteController {
         msg: '请求的资源不存在'
       }
     } else {
-      const meta: RouteMeta = Object.assign(routeMetaTobeUpdated, metaData)
-      const route: Route = Object.assign(routeToBeUpdated, ctx.request.body, { meta })
+      const route: Route = Object.assign(routeToBeUpdated, ctx.request.body, ctx.request.body.meta)
       await routeRepository.save(route)
       ctx.status = 200
       ctx.body = {
@@ -63,39 +72,54 @@ export default class RouteController {
   public static async deleteRoute(ctx: BaseContext) {
     const { id } = ctx.params
     const routeRepository: Repository<Route> = getManager().getRepository(Route)
-    if (await routeRepository.findOne({
-      parentId: Number(id)
-    })) {
+    const parent = await routeRepository.findOne({ id })
+
+    if (!parent) {
+      ctx.status = 200
+      ctx.body = ctx.util.refail('请求的资源不存在')
+      return
+    }
+    if (await routeRepository.findOne({ parent })) {
       ctx.status = 200
       ctx.body = ctx.util.refail({
         msg: '请先删除该路由下的子路由'
       })
-    } else {
-      await routeRepository.delete({
-        id: Number(id)
-      })
-      ctx.status = 200
-      ctx.body = ctx.util.resuccess()
+      return
     }
+    await routeRepository.delete({
+      id: Number(id)
+    })
+    ctx.status = 200
+    ctx.body = ctx.util.resuccess()
   }
 
   public static async importRoutes(ctx: BaseContext) {
-    const { routes }: { routes: Route[] } = ctx.body
-
-    if (!routes) {
-      ctx.status = 200
-      ctx.body = ctx.refail(null, 40001)
-    } else {
+    const { routes } = ctx.request.body
+    const routeRepository: Repository<Route> = getManager().getRepository(Route)
+    const batchInsertRoutes = async (routes, parent) => {
+      const routeRows = await Promise.all(routes.map(async (route, index) => {
+        delete route.parentId
+        let parentRowData = await routeRepository.findOne({ id: parent && parent.id })
+        Object.assign(route, route.meta, { roles: [] }, { order: index })
+        parentRowData && (route.parent = parentRowData)
+        return route
+      }))
       await getConnection()
         .createQueryBuilder()
         .insert()
         .into(Route)
-        .values(routes.map(el => {
-          el.id = Number(el.id)
-          el.parentId = Number(el.parentId)
-          return el
-        }))
+        .values(routeRows)
         .execute()
+      routes.forEach(async el => {
+        if (!el.children || !el.children.length) return
+        await batchInsertRoutes(el.children, el)
+      })
+    }
+    if (!routes) {
+      ctx.status = 200
+      ctx.body = ctx.refail(null, 40001)
+    } else {
+      await batchInsertRoutes(routes, null)
       ctx.status = 200
       ctx.body = ctx.util.resuccess()
     }
