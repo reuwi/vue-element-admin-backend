@@ -30,4 +30,26 @@ export class Middleware {
     ctx.util = utilFn
     return next()
   }
+  public static async errHandler(ctx: BaseContext, next: () => Promise<any>) {
+    try {
+      return await next()
+    }
+    catch (err) {
+      console.error(err)
+      const statusMsgMap = {
+        401: 'Protected resource, use Authorization header to get access\n',
+        404: 'Request Not Found',
+        500: 'Server Interval Error'
+      }
+      const codeMap = {
+        401: 40001,
+        404: 40004,
+        500: 50000
+      }
+      const msg = statusMsgMap[err.status || 500] || 'Server Interval Error'
+      const code = codeMap[err.status]
+      ctx.status = 200
+      ctx.body = ctx.util.refail(msg, code)
+    }
+  }
 }
