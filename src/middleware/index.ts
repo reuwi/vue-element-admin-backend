@@ -32,10 +32,9 @@ export class Middleware {
   }
   public static async errHandler(ctx: BaseContext, next: () => Promise<any>) {
     try {
-      return await next()
+      await next()
     }
     catch (err) {
-      console.error(err)
       const statusMsgMap = {
         401: 'Protected resource, use Authorization header to get access\n',
         404: 'Request Not Found',
