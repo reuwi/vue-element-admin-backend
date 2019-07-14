@@ -6,14 +6,14 @@ import { flat2tree } from '../utils'
 export default class RouteController {
   public static async getRoutes(ctx: BaseContext) {
     const routeRepository: Repository<Route> = getManager().getRepository(Route)
-    const routes: Route[] = await routeRepository.find({ relations: ['parent'] })
+    const routes: Route[] = await routeRepository.find({ relations: ['parent', 'roles'] })
     const routeProps = ['id', 'parentId', 'name', 'component', 'redirect', 'path', 'hidden']
     const mapedRoutes = routes.map(route => {
       let obj = { parentId: route.parent && route.parent.id, meta: {}}
       delete route.parent
       for (let key in route) {
         if (!routeProps.includes(key)) {
-          obj.meta = { [key]: route[key] }
+          obj.meta = Object.assign(obj.meta, { [key]: route[key] })
         } else {
           obj[key] = route[key]
         }
