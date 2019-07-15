@@ -24,7 +24,7 @@ export default class UserController {
     const userRepository: Repository<User> = getManager().getRepository(User)
     let { id } = ctx.params
     let user: User | null
-    if (id === 'me') {
+    if (id === 'me' || ctx.path.endsWith('/user/info')) {
       id = ctx.state.user.id
     } else {
       id = Number(ctx.params.id)
@@ -38,11 +38,10 @@ export default class UserController {
     if (user) {
       // return OK status code and loaded user object
       ctx.status = 200
-      ctx.body = Object.assign(user, { roles: user.roles.map(el => el.name) })
+      ctx.body = ctx.util.resuccess(Object.assign(user, { roles: user.roles.map(el => el.name) }))
     } else {
       // return a BAD REQUEST status code and error message
-      ctx.status = 400
-      ctx.body = 'The user you are trying to retrieve doesn\'t exist in the db'
+      ctx.throw(400, 'The user you are trying to retrieve doesn\'t exist in the db')
     }
 
   }

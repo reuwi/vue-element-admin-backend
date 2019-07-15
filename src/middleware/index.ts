@@ -12,14 +12,14 @@ const utilFn = {
   resuccess(data: any) {
     return {
       code: 20000,
-      msg: codeMap['20000'],
+      message: codeMap['20000'],
       data: data || null
     }
   },
-  refail(msg?: string, code?: number, data?: number) {
+  refail(message?: string, code?: number, data?: number) {
     return {
       code: code || -1,
-      msg: msg || codeMap[code],
+      message: message || codeMap[code],
       data: data || null
     }
   }
@@ -49,10 +49,10 @@ export class Middleware {
         422: 40022,
         500: 50000
       }
-      const msg = statusMsgMap[err.status] || 'Server Interval Error'
+      const message = statusMsgMap[err.status] || 'Server Interval Error'
       const code = codeMap[err.status]
       ctx.status = 200
-      ctx.body = utilFn.refail(msg, code)
+      ctx.body = utilFn.refail(message, code)
     }
   }
 }

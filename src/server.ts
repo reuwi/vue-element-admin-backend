@@ -60,7 +60,12 @@ createConnection({
 
   app.use(Middleware.util)
   // JWT middleware -> below this line routes are only reached if JWT token is valid, secret as env variable
-  app.use(jwt({ secret: config.jwtSecret }).unless((ctx: Koa.Context) => {
+  app.use(jwt({
+    secret: config.jwtSecret,
+    getToken: ctx => {
+      return ctx.headers['x-token'] // all header key will be transfered to small case
+    }
+  }).unless((ctx: Koa.Context) => {
     if (/^\/api/.test(ctx.path)) {
       return pathToRegexp([
         '/api/user/login',

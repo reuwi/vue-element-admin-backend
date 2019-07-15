@@ -13,6 +13,7 @@ router.get('/users/:id', controller.user.getUser)
 router.post('/users', controller.user.createUser)
 router.put('/users/:id', controller.user.updateUser)
 router.delete('/users/:id', controller.user.deleteUser)
+router.get('/user/info', controller.user.getUser)
 
 // Route Routes
 router.get('/routes', controller.route.getRoutes)

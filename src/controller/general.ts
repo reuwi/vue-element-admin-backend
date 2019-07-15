@@ -26,19 +26,14 @@ export default class GeneralController {
     const { jwtSecret, jwtExpire } = config
     const token = jwt.sign({ id: user.id }, jwtSecret, { expiresIn: jwtExpire })
     if (user && user.password === password) {
-      ctx.body = {
-        status: 1,
-        msg: 'success',
-        data: {
-          token
-        }
-      }
+      ctx.status = 200
+      ctx.body = ctx.util.resuccess({ token })
       return
     }
     ctx.throw(422, '用户名或密码错误')
   }
   public static logout(ctx: BaseContext) {
     ctx.status = 200
-    ctx.body = ctx.resuccess('success')
+    ctx.body = ctx.util.resuccess('success')
   }
 }
