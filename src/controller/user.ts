@@ -38,7 +38,7 @@ export default class UserController {
     if (user) {
       // return OK status code and loaded user object
       ctx.status = 200
-      ctx.body = user
+      ctx.body = Object.assign(user, { roles: user.roles.map(el => el.name) })
     } else {
       // return a BAD REQUEST status code and error message
       ctx.status = 400
