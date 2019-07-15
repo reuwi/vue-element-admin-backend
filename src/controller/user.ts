@@ -22,9 +22,18 @@ export default class UserController {
 
     // get a user repository to perform operations with user
     const userRepository: Repository<User> = getManager().getRepository(User)
-
+    let { id } = ctx.params
+    let user: User | null
+    if (id === 'me') {
+      id = ctx.state.user.id
+    } else {
+      id = Number(ctx.params.id)
+    }
     // load user by id
-    const user: User = await userRepository.findOne(Number(ctx.params.id) || 0)
+    user = await userRepository.findOne(id, {
+      relations: ['roles'],
+      select: ['id', 'username', 'email']
+    })
 
     if (user) {
       // return OK status code and loaded user object

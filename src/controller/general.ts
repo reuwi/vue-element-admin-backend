@@ -24,7 +24,7 @@ export default class GeneralController {
       }
     })
     const { jwtSecret, jwtExpire } = config
-    const token = jwt.sign({ username }, jwtSecret, { expiresIn: jwtExpire })
+    const token = jwt.sign({ id: user.id }, jwtSecret, { expiresIn: jwtExpire })
     if (user && user.password === password) {
       ctx.body = {
         status: 1,

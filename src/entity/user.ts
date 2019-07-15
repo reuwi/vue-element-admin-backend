@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm'
+import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable } from 'typeorm'
+import { Role } from './role'
 import { Length, IsEmail } from 'class-validator'
 
 @Entity()
@@ -17,6 +18,10 @@ export class User {
   })
   @Length(10, 80)
   public password: string
+
+  @ManyToMany(type => Role, role => role.user)
+  @JoinTable()
+  public roles: Role[]
 
   @Column({
     length: 100
