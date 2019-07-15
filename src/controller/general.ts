@@ -35,10 +35,10 @@ export default class GeneralController {
       }
       return
     }
-    ctx.status = 422
-    ctx.body = {
-      status: 0,
-      msg: '用户名或密码错误'
-    }
+    ctx.throw(422, '用户名或密码错误')
+  }
+  public static logout(ctx: BaseContext) {
+    ctx.status = 200
+    ctx.body = ctx.resuccess('success')
   }
 }

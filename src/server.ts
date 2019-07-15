@@ -63,7 +63,8 @@ createConnection({
   app.use(jwt({ secret: config.jwtSecret }).unless((ctx: Koa.Context) => {
     if (/^\/api/.test(ctx.path)) {
       return pathToRegexp([
-        '/api/login',
+        '/api/user/login',
+        '/api/user/logout',
         '/api/routes',
         '/api/routes/import'
       ]).test(ctx.path)

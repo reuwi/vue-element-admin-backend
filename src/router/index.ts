@@ -4,7 +4,8 @@ import * as controller from '../controller'
 const router = new Router({ prefix: '/api' })
 
 // GENERAL ROUTES
-router.post('/login', controller.general.login)
+router.post('/user/login', controller.general.login)
+router.post('/user/logout', controller.general.logout)
 
 // USER ROUTES
 router.get('/users', controller.user.getUsers)

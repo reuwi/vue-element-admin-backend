@@ -39,12 +39,14 @@ export class Middleware {
         400: 'Request Params Error',
         401: 'Protected resource, use Authorization header to get access\n',
         404: 'Request Not Found',
+        422: 'Username Or Password Error',
         500: 'Server Interval Error'
       }
       const codeMap = {
         400: 40000,
         401: 40001,
         404: 40004,
+        422: 40022,
         500: 50000
       }
       const msg = statusMsgMap[err.status] || 'Server Interval Error'
