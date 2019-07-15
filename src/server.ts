@@ -44,13 +44,13 @@ createConnection({
 
   const app = new Koa()
 
-  // app.use(Middleware.errHandler)
+  app.use(Middleware.errHandler)
 
   // Provides important security headers to make your app more secure
-  // app.use(helmet())
+  app.use(helmet())
 
   // Enable cors with default options
-  // app.use(cors())
+  app.use(cors())
 
   // Logger middleware -> use winston as logger (logging.ts with config)
   app.use(logger(winston))

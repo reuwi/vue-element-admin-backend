@@ -20,7 +20,6 @@ export default class RouteController {
       }
       return obj
     })
-
     ctx.status = 200
     ctx.body = {
       code: 20000,
@@ -33,8 +32,7 @@ export default class RouteController {
     const routeRepository: Repository<Route> = getManager().getRepository(Route)
     const { meta, ...routeData } = ctx.request.body
     if (!routeData || !meta) {
-      ctx.status = 200
-      ctx.body = ctx.util.refail(null, 400001)
+      ctx.throw(400, 'Request Params Error')
     }
     const routeTobeCreated: Route = Object.assign(new Route(), routeData, ...routeData.meta)
     const route: Route = await routeRepository.save(routeTobeCreated)
@@ -47,8 +45,7 @@ export default class RouteController {
     const { id }: { id: string } = ctx.params
     const { meta: metaData, ...routeData } = ctx.request.body
     if (!routeData || !metaData) {
-      ctx.status = 200
-      ctx.body = ctx.util.refail(null, 400001)
+      ctx.throw(400, 'Request Params Error')
     }
     const routeToBeUpdated: Route | null = await routeRepository.findOne({ id: Number(id) })
 
@@ -75,15 +72,11 @@ export default class RouteController {
     const parent = await routeRepository.findOne({ id })
 
     if (!parent) {
-      ctx.status = 200
-      ctx.body = ctx.util.refail('请求的资源不存在')
+      ctx.throw(404)
       return
     }
     if (await routeRepository.findOne({ parent })) {
-      ctx.status = 200
-      ctx.body = ctx.util.refail({
-        msg: '请先删除该路由下的子路由'
-      })
+      ctx.throw(400, '请先删除该路由下的子路由')
       return
     }
     await routeRepository.delete({
@@ -116,8 +109,7 @@ export default class RouteController {
       })
     }
     if (!routes) {
-      ctx.status = 200
-      ctx.body = ctx.refail(null, 40001)
+      ctx.throw(400, 'Request Params Error')
     } else {
       await batchInsertRoutes(routes, null)
       ctx.status = 200
