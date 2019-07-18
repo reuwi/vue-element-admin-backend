@@ -68,7 +68,7 @@ export class Route {
   })
   public affix: boolean
 
-  @ManyToMany(type => Role, role => role.route)
+  @ManyToMany(type => Role, role => role.routes)
   @JoinTable()
   public roles: Role[]
 }

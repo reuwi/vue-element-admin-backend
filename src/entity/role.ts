@@ -24,7 +24,7 @@ export class Role {
   public description: string
 
   @ManyToMany(type => Route, route => route.roles)
-  public route: Route[]
+  public routes: Route[]
 
   @ManyToMany(type => User, user => user.roles)
   public user: User[]

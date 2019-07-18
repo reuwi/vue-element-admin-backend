@@ -22,4 +22,10 @@ router.delete('/routes/:id', controller.route.deleteRoute)
 router.put('/routes', controller.route.importRoutes)
 router.put('/routes/:id', controller.route.updateRoute)
 
+// Role Route
+router.get('/roles', controller.role.getRoles)
+router.post('/role', controller.role.createRole)
+router.delete('/role/:id', controller.role.deleteRole)
+router.put('/role/:id', controller.role.updateRole)
+
 export { router }

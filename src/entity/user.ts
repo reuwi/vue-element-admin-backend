@@ -25,7 +25,7 @@ export class User {
   @Length(10, 80)
   public password: string
 
-  @ManyToMany(type => Role, role => role.user)
+  @ManyToMany(type => Role, role => role.user, { cascade: true })
   @JoinTable()
   public roles: Role[]
 
