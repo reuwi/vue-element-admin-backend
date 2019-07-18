@@ -8,9 +8,10 @@ import * as PostgressConnectionStringParser from 'pg-connection-string'
 import 'reflect-metadata'
 import { createConnection } from 'typeorm'
 import * as winston from 'winston'
-
 import * as path from 'path'
 import * as pathToRegexp from 'path-to-regexp'
+import * as staticCache from 'koa-static-cache'
+
 import { Middleware } from './middleware'
 import { config } from './config'
 import { logger } from './logging'
@@ -19,6 +20,14 @@ import { router } from './router'
 // Load environment variables from .env file, where API keys and passwords are configured
 dotenv.config({ path: '.env' })
 
+const serve = (prefix, filePath) => {
+  return staticCache(path.resolve(__dirname, filePath), {
+    prefix: prefix,
+    gzip: true,
+    dynamic: true,
+    maxAge: 60 * 60 * 24 * 30
+  })
+}
 // Get DB connection options from env variable
 const connectionOptions = PostgressConnectionStringParser.parse(config.databaseUrl)
 
@@ -43,6 +52,7 @@ createConnection({
 }).then(async (connection) => {
 
   const app = new Koa()
+  app.use(serve('/upload', '../upload'))
 
   app.use(Middleware.errHandler)
 

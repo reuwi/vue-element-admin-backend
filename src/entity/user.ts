@@ -14,6 +14,12 @@ export class User {
   public username: string
 
   @Column({
+    nullable: true,
+    length: 500
+  })
+  public avatar: string
+
+  @Column({
     length: 80
   })
   @Length(10, 80)

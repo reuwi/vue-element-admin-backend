@@ -32,7 +32,7 @@ export default class UserController {
     // load user by id
     user = await userRepository.findOne(id, {
       relations: ['roles'],
-      select: ['id', 'username', 'email']
+      select: ['id', 'username', 'email', 'avatar']
     })
 
     if (user) {
