@@ -24,7 +24,7 @@ export class Route {
   public path: string
 
   @Column({
-    unique: true,
+    nullable: true,
     length: 80
   })
   public name: string
@@ -36,9 +36,15 @@ export class Route {
   public redirect: string
 
   @Column({
+    nullable: true,
     length: 80
   })
   public component: string
+
+  @Column({
+    default: false
+  })
+  public hidden: boolean
 
   @Column({
     nullable: true,

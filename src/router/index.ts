@@ -19,7 +19,7 @@ router.get('/user/info', controller.user.getUser)
 router.get('/routes', controller.route.getRoutes)
 router.post('/routes', controller.route.createRoute)
 router.delete('/routes/:id', controller.route.deleteRoute)
+router.put('/routes', controller.route.importRoutes)
 router.put('/routes/:id', controller.route.updateRoute)
-router.post('/routes/import', controller.route.importRoutes)
 
 export { router }

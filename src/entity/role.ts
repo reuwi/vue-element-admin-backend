@@ -13,6 +13,7 @@ export class Role {
   public key: string
 
   @Column({
+    unique: true,
     length: 80
   })
   public name: string
