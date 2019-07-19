@@ -8,11 +8,6 @@ export class Role {
   public id: number
 
   @Column({
-    length: 80
-  })
-  public key: string
-
-  @Column({
     unique: true,
     length: 80
   })

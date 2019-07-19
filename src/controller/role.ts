@@ -1,14 +1,15 @@
 import { BaseContext } from 'koa'
-import { getManager, Repository, getConnection } from 'typeorm'
+import { getManager, Repository, TreeRepository, getConnection } from 'typeorm'
 import { Role } from '../entity/role'
 import { Route } from '../entity/route'
 
 export default class RoleController {
   public static async getRoles(ctx: BaseContext) {
     const roleRepository: Repository<Role> = getManager().getRepository(Role)
-    const roles: Role[] = await roleRepository.find({ relations: ['routes'] })
+    // const routeRepository: TreeRepository<Route> = getManager().getTreeRepository(Route)
+    const roles: Role[] = await roleRepository.find({ relations: ['routes', 'routes.children'] })
     ctx.status = 200
-    ctx.body = ctx.util.resuccess(roles.map(el => Object.assign(el, { key: el.id })))
+    ctx.body = ctx.util.resuccess(roles.map(role => Object.assign(role, { key: role.id })))
   }
 
   public static async createRole(ctx: BaseContext) {
