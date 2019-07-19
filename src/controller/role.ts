@@ -40,19 +40,16 @@ export default class RoleController {
       return routes.reduce((arr, route) => {
         arr.push(route.id)
         if (route.children && route.children.length) {
-          console.log(2222222, getRoutesIds(route.children))
           arr.push(...getRoutesIds(route.children))
         }
         return arr
       }, [])
     }
-    console.log('------', getRoutesIds(roleData.routes))
     const routes = await Promise.all(getRoutesIds(roleData.routes).map(async routeId => {
       let route = await routeRepository.findOne({ id: routeId })
       return route
     }))
     roleData.routes = routes
-    console.log(routes)
     await roleRepository.save(Object.assign(role, roleData))
     ctx.status = 200
     ctx.body = ctx.util.resuccess({})
