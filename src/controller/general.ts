@@ -8,11 +8,7 @@ export default class GeneralController {
   public static async login(ctx: BaseContext) {
     const { username, password } = ctx.request.body
     if (!username || !password) {
-      ctx.status = 422
-      ctx.body = {
-        status: 0,
-        msg: '用户名或密码不能为空'
-      }
+      ctx.throw(422, '用户名或密码不能为空')
       return
     }
     // get a user repository to perform operations with user
