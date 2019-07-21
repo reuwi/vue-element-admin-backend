@@ -18,3 +18,5 @@ dist/**/*
 
 # Logging files
 *.log
+
+public

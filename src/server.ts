@@ -52,6 +52,7 @@ createConnection({
 }).then(async (connection) => {
 
   const app = new Koa()
+  app.use(serve('/public', '../public'))
   app.use(serve('/upload', '../upload'))
 
   app.use(Middleware.errHandler)
