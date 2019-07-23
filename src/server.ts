@@ -20,7 +20,7 @@ import { router } from './router'
 // Load environment variables from .env file, where API keys and passwords are configured
 dotenv.config({ path: '.env' })
 
-const serve = (prefix, filePath) => {
+const serve = (prefix, filePath): any => {
   return staticCache(path.resolve(__dirname, filePath), {
     prefix: prefix,
     gzip: true,
@@ -37,7 +37,7 @@ const connectionOptions = PostgressConnectionStringParser.parse(config.databaseU
 createConnection({
   host: connectionOptions.host,
   type: 'postgres',
-  port: connectionOptions.port,
+  port: Number(connectionOptions.port),
   username: connectionOptions.user,
   password: connectionOptions.password,
   database: connectionOptions.database,
@@ -76,16 +76,13 @@ createConnection({
     getToken: ctx => {
       return ctx.headers['x-token'] // all header key will be transfered to small case
     }
-  }).unless((ctx: Koa.Context) => {
-    if (/^\/api/.test(ctx.path)) {
-      return pathToRegexp([
-        '/api/user/login',
-        '/api/user/logout',
-        '/api/routes',
-        '/api/routes/import'
-      ]).test(ctx.path)
-    }
-    return true
+  }).unless({
+    path: [
+      /\/api\/user\/login/,
+      /\/api\/user\/logout/,
+      /\/api\/routes/,
+      /\/api\/routes\/import/
+    ]
   }))
 
   // this routes are protected by the JWT middleware,

@@ -1,4 +1,4 @@
-import { BaseContext } from 'Koa'
+import { BaseContext } from 'koa'
 
 const codeMap = {
   '-1': 'fail',
@@ -44,7 +44,7 @@ export class Middleware {
       }
       const codeMap = {
         400: 40000,
-        401: 40001,
+        401: 50008,
         404: 40004,
         422: 40022,
         500: 50000
