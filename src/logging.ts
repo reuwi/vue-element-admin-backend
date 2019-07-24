@@ -36,9 +36,9 @@ export function logger(winstonInstance) {
         level: config.debugLogging ? 'debug' : 'info',
         transports: [
           // - Write all logs error (and below) to `error.log`.
-          // new winston.transports.File({ filename: path.resolve(__dirname, '../log', 'info.log'), level: 'info' }),
           new winston.transports.File({ filename: path.resolve(__dirname, '../log', 'error.log'), level: 'error' }),
-          // new winston.transports.File({ filename: path.resolve(__dirname, '../log', 'warn.log'), level: 'warn' }),
+          new winston.transports.File({ filename: path.resolve(__dirname, '../log', 'warn.log'), level: 'warn' }),
+          new winston.transports.File({ filename: path.resolve(__dirname, '../log', 'info.log'), level: 'info' }),
 
           // - Write to all logs with specified level to console.
           new winston.transports.Console({
