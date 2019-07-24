@@ -10,7 +10,7 @@ export class User {
   @Column({
     length: 80
   })
-  @Length(10, 80)
+  @Length(4, 80)
   public username: string
 
   @Column({
@@ -22,7 +22,7 @@ export class User {
   @Column({
     length: 80
   })
-  @Length(10, 80)
+  @Length(5, 80)
   public password: string
 
   @ManyToMany(type => Role, role => role.user, { cascade: true })
