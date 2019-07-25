@@ -15,6 +15,7 @@ export function logger(winstonInstance) {
       status = ctx.status
       uid = ctx.user && ctx.user.id || ''
     } catch (err) {
+      console.error(err)
       status = err.status || 500
       errMessage = err.message || ''
       ctx.throw(status, err.message)

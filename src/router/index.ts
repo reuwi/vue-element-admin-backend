@@ -3,6 +3,9 @@ import * as controller from '../controller'
 
 const router = new Router({ prefix: '/api' })
 
+// Upload
+router.post('/upload', controller.util.upload)
+
 // GENERAL ROUTES
 router.post('/user/login', controller.general.login)
 router.post('/user/logout', controller.general.logout)
