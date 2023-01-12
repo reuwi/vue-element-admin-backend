@@ -58,7 +58,7 @@
   "dependencies": {
     "@koa/cors": "^2.2.1",
     "@types/koa-static-cache": "^5.1.0",
-    "class-validator": "^0.9.1",
+    "class-validator": "^0.14.0",
     "crypto": "^1.0.1",
     "dotenv": "^6.0.0",
     "koa": "^2.5.1",
